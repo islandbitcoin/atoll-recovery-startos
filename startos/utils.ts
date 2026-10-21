@@ -22,17 +22,17 @@ export async function preparePrivateFiles() {
     'private/alerts.json',
   ]) {
     const file = sdk.volumes.main.subpath(name)
+    // An existing empty JSON file from the first prerelease also needs a
+    // document before FileHelper parses it. Never rewrite nonempty config.
+    const handle = await fs.open(file, 'a+', 0o600)
     try {
-      await (await fs.open(file, 'wx', 0o600)).close()
-    } catch (error) {
-      if (
-        !(error instanceof Error) ||
-        !('code' in error) ||
-        error.code !== 'EEXIST'
-      )
-        throw error
+      await handle.chmod(0o600)
+      if (name.endsWith('.json') && (await handle.stat()).size === 0) {
+        await handle.writeFile('{}\n')
+      }
+    } finally {
+      await handle.close()
     }
-    await fs.chmod(file, 0o600)
   }
 }
 

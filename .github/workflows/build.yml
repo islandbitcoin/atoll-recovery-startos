@@ -22,3 +22,65 @@ jobs:
       contents: read
     uses: Start9Labs/start-technologies/.github/workflows/build.yml@master
     # No DEV_KEY — a PR build doesn't publish, so it doesn't need the signing key.
+
+  initialization:
+    name: First-install configuration
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci
+      - name: Read initialized configuration through the real SDK
+        shell: bash
+        run: |
+          node <<'JS'
+          const fs = require('node:fs/promises')
+          const assert = require('node:assert/strict')
+          const ts = require('typescript')
+          require.extensions['.ts'] = (module, filename) => {
+            const source = require('node:fs').readFileSync(filename, 'utf8')
+            module._compile(ts.transpileModule(source, {compilerOptions: {
+              module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022,
+              esModuleInterop: true,
+            }}).outputText, filename)
+          }
+          async function check() {
+            const {sdk} = require(process.cwd() + '/startos/sdk.ts')
+            const {preparePrivateFiles} = require(process.cwd() + '/startos/utils.ts')
+            const root = await fs.mkdtemp('/tmp/atoll-init-')
+            sdk.volumes.main.path = root
+            const {configuration, alertConfiguration, remotes} = require(process.cwd() + '/startos/fileModels/config.ts')
+            try {
+              await preparePrivateFiles()
+              assert.equal((await configuration.read().once()).source, '')
+              assert.equal((await alertConfiguration.read().once()).enabled, false)
+              assert.equal((await remotes.read().once()).r2.endpoint, '')
+              for (const name of ['copy.json', 'alerts.json']) {
+                const path = root + '/private/' + name
+                assert.equal((await fs.stat(path)).mode & 0o777, 0o600)
+                await fs.writeFile(path, '')
+              }
+              await preparePrivateFiles()
+              assert.equal((await configuration.read().once()).source, '')
+              assert.equal((await alertConfiguration.read().once()).generation, '')
+              const path = root + '/private/copy.json'
+              const saved = '{"source":"r2:fixture/escrow","unknown":"preserve"}\n'
+              await fs.writeFile(path, saved)
+              await preparePrivateFiles()
+              assert.equal(await fs.readFile(path, 'utf8'), saved)
+              assert.equal((await configuration.read().once()).source, 'r2:fixture/escrow')
+              await fs.writeFile(path, '{broken')
+              await preparePrivateFiles()
+              assert.equal(await fs.readFile(path, 'utf8'), '{broken')
+              await assert.rejects(configuration.read().once(), SyntaxError)
+              console.log('First-install SDK reads, empty-file repair, private modes and retained configuration passed.')
+            } finally { await fs.rm(root, {recursive: true, force: true}) }
+          }
+          check().catch(error => { console.error(error); process.exitCode = 1 })
+          JS
