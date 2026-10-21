@@ -44,6 +44,9 @@ export const alertConfiguration = FileHelper.json(
   z.looseObject({
     enabled: z.boolean().catch(false),
     webhook_url: z.string().catch(''),
+    provider: z.enum(['webhook', 'ntfy']).catch('webhook'),
+    token: z.string().catch(''),
+    topic: z.string().catch(''),
     generation: z.string().catch(''),
   }),
 )

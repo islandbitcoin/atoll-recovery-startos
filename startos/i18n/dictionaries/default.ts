@@ -81,6 +81,12 @@ const dict = {
   'Approve the dedicated account in the browser, then run this action again.': 78,
   'Advanced Transfer Setup': 79,
   'Use a dedicated non-admin Nextcloud account. Start Connect Nextcloud again.': 80,
+  'Connect NTFY': 81,
+  'Connect the installed NTFY service with a dedicated write-only publisher. No token entry is required.': 82,
+  'Start NTFY and configure an HTTPS Web UI address first.': 83,
+  'Unable to connect the NTFY publisher.': 84,
+  'NTFY connected': 85,
+  'Subscribe to atoll-recovery-health in NTFY. Start Atoll and confirm a received alert. Local notifications cannot report loss of Zion.': 86,
 } as const
 export type I18nKey = keyof typeof dict
 export type LangDict = Record<(typeof dict)[I18nKey], string>

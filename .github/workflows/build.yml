@@ -93,6 +93,29 @@ jobs:
               })
               assert.deepEqual(await utils.connectionRequest({}, 'nextcloud-start', {}), {pending: true})
               assert.equal(bundle, 'FIXTURE-PUBLIC-ROOTS\nFIXTURE-STARTOS-ROOT')
+              const {connectNtfy} = require(process.cwd() + '/startos/actions/connectNtfy.ts')
+              sdk.host.get = (_effects, where) => {
+                assert.deepEqual(where, {packageId: 'ntfy', hostId: 'ui-multi'})
+                return {once: async () => 'https://ntfy.invalid'}
+              }
+              let grants = 0
+              sdk.action.clearTask = async () => null
+              sdk.action.run = async options => {
+                grants++
+                assert.equal(options.packageId, 'ntfy')
+                assert.equal(options.actionId, 'provision-publisher')
+                assert.deepEqual(options.input({}), {packageId: 'atoll-recovery', topic: 'atoll-recovery-health'})
+                return {version: '1', result: {type: 'group', value: [{type: 'single', name: 'localized', masked: true, value: 'tk_fixture'}]}}
+              }
+              const result = await connectNtfy.run({effects: {}, input: {}})
+              assert.equal(JSON.stringify(result).includes('tk_fixture'), false)
+              const route = await alertConfiguration.read().once()
+              assert.equal(route.provider, 'ntfy')
+              assert.equal(route.token, 'tk_fixture')
+              assert.equal(route.topic, 'atoll-recovery-health')
+              await connectNtfy.run({effects: {}, input: {}})
+              assert.equal(grants, 1)
+              assert.notEqual((await alertConfiguration.read().once()).generation, route.generation)
               console.log('First-install SDK reads, private modes, retained configuration and helper trust environment passed.')
             } finally { await fs.rm(root, {recursive: true, force: true}) }
           }
