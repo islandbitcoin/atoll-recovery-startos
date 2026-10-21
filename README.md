@@ -63,7 +63,7 @@ modify another service's volume and does not require Vaultwarden access.
 
 No inbound interfaces or listening ports are exposed. R2 and Nextcloud transfers
 and paired issuer requests use outbound HTTPS; the Nextcloud certificate must pass normal trust checks.
-The package creates no public endpoint and does not change either remote service.
+The copy runner and setup helpers retain the image’s public CA roots and add this StartOS server’s root in ephemeral container storage, so local HTTPS origins can be verified without disabling TLS. The package creates no public endpoint and does not change either remote service.
 
 ## Installation and First-Run Flow
 

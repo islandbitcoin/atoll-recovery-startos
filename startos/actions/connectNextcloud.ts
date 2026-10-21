@@ -37,12 +37,17 @@ export const connectNextcloud = sdk.Action.withInput(
     // This is a one-shot form prefill, not a runtime service connection.
     const origin = await sdk.host
       .get(effects, { packageId: 'nextcloud', hostId: 'main' }, (host) => {
-        const urls = Object.values(host?.bindings ?? {}).flatMap(
-          (binding) =>
-            binding.interfaces.ui?.addressInfo.public
-              .filter({ kind: 'domain' })
-              .format('url') ?? [],
-        )
+        const urls = Object.values(host?.bindings ?? {}).flatMap((binding) => {
+          const address = binding.interfaces.ui?.addressInfo
+          return address
+            ? [
+                ...address.public.filter({ kind: 'domain' }).format('url'),
+                ...address.nonLocal
+                  .filter({ kind: ['domain', 'mdns'] })
+                  .format('url'),
+              ]
+            : []
+        })
         return urls.find(
           (u) =>
             u.protocol === 'https:' &&

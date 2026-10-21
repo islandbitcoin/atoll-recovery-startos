@@ -75,6 +75,7 @@ export async function connectionRequest(
     mounts(),
     'connection-setup',
     async (sub) => {
+      await prepareTrust(effects, sub)
       const command = ['python', '/opt/cashu-copy/connect.py', operation]
       if (operation === 'nextcloud-finish')
         command.push('--result-file', '/data/private/nextcloud-authorized.json')
@@ -114,4 +115,32 @@ export function secureOrigin(value: string) {
       ),
     )
   }
+}
+
+export const trustEnvironment = { SSL_CERT_FILE: '/tmp/atoll-ca.pem' }
+
+// Keep public roots and add this StartOS server's root for local HTTPS origins.
+// Regenerate in the subcontainer rootfs; certificates do not belong in backups.
+export async function prepareTrust(
+  effects: Parameters<typeof sdk.SubContainer.withTemp>[0],
+  sub: {
+    exec(
+      command: string[],
+    ): Promise<{ exitCode: number | null; stdout: { toString(): string } }>
+    writeFile(path: string, data: string): Promise<void>
+  },
+) {
+  const roots = await sub.exec([
+    'python',
+    '-c',
+    'from pathlib import Path; print(Path("/etc/ssl/cert.pem").read_text(), end="")',
+  ])
+  if (roots.exitCode !== 0)
+    throw new Error(
+      i18n('Connection failed. Check approval, origin and network access.'),
+    )
+  await sub.writeFile(
+    trustEnvironment.SSL_CERT_FILE,
+    roots.stdout.toString() + '\n' + (await sdk.getRootCa(effects)),
+  )
 }

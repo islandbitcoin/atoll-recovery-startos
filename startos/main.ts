@@ -1,7 +1,12 @@
 import { i18n } from './i18n'
 import { sdk } from './sdk'
 import { configuration, remotes, alertConfiguration } from './fileModels/config'
-import { mounts, preparePrivateFiles } from './utils'
+import {
+  mounts,
+  preparePrivateFiles,
+  prepareTrust,
+  trustEnvironment,
+} from './utils'
 
 export const main = sdk.setupMain(async ({ effects }) => {
   await preparePrivateFiles()
@@ -24,6 +29,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
     mounts(),
     'copy-runner',
   )
+  await prepareTrust(effects, sub)
   const daemons = sdk.Daemons.of(effects)
     .addDaemon('copy', {
       subcontainer: sub,
@@ -37,6 +43,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
           '/data/state/copy.json',
         ],
         sigtermTimeout: 10_000,
+        env: trustEnvironment,
       },
       ready: {
         display: i18n('Copy runner'),
@@ -118,6 +125,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
             '/data/state/alerts.json',
           ],
           sigtermTimeout: 10_000,
+          env: trustEnvironment,
         },
         ready: {
           display: i18n('Notification watcher'),
