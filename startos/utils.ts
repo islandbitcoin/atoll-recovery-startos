@@ -79,7 +79,11 @@ export async function connectionRequest(
       const command = ['python', '/opt/cashu-copy/connect.py', operation]
       if (operation === 'nextcloud-finish')
         command.push('--result-file', '/data/private/nextcloud-authorized.json')
-      const result = await sub.exec(command, { input: JSON.stringify(input) })
+      const result = await sub.exec(command, {
+        input: JSON.stringify(input),
+        env: trustEnvironment,
+        timeout: 120_000,
+      })
       if (result.exitCode !== 0)
         throw new Error(
           i18n('Connection failed. Check approval, origin and network access.'),
