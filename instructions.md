@@ -40,3 +40,17 @@ At 18 hours of source age the freshness display asks you to investigate. At 24 h
 The package cannot report when the whole package, host or network stops. Configure a receiver outside Zion to detect missing heartbeats; disabled notifications provide no external warning. This package does not automatically stop card issuance. A verified copy is not evidence that the recovery key can decrypt it or that a restored service is safe to reopen.
 
 The recovery private identity stays in restricted Vaultwarden custody and the designated operator's protected offline copy outside Zion. Never put it in this service or Nextcloud. Backups of this service contain transfer credentials and verification state; protect access to them. They do not include the remote encrypted snapshots themselves.
+
+### NTFY notifications
+
+Install NTFY from the Start9 Registry, initialize its admin account and configure
+an HTTPS Web UI address. Run **Connect NTFY** in Atoll Recovery. It obtains a
+dedicated write-only publisher privately; no token is pasted. Subscribe to
+`atoll-recovery-health` with a separately authorized NTFY reader. Start Atoll and
+confirm both Recovery Status acceptance and an actual received notification.
+The publisher cannot read topics or administer NTFY. Use **Revoke Publisher** in
+NTFY for `atoll-recovery` to withdraw its authority. Reconnect after revocation
+requires using Configure Alerts to disable notifications, then Connect NTFY again.
+
+A receiver on Zion cannot report Zion being offline. Independent monitoring and
+an authenticated restore drill remain separate requirements.

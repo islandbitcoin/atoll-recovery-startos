@@ -1,6 +1,12 @@
 import { LangDict } from './default'
 export default {
   es_ES: {
+    81: 'Conectar NTFY',
+    82: 'Conecte NTFY con un emisor dedicado de solo escritura, sin introducir tokens.',
+    83: 'Inicie NTFY y configure primero una dirección HTTPS.',
+    84: 'No se pudo conectar el emisor NTFY.',
+    85: 'NTFY conectado',
+    86: 'Suscríbase a atoll-recovery-health en NTFY. Inicie Atoll y confirme la recepción de una alerta. Las notificaciones locales no detectan la pérdida de Zion.',
     0: 'Proceso de copia',
     1: 'El proceso de copia ha iniciado',
     2: 'El proceso de copia no pudo leer su configuración',
@@ -84,6 +90,12 @@ export default {
     80: 'Use una cuenta dedicada de Nextcloud sin privilegios administrativos. Vuelva a iniciar Conectar Nextcloud.',
   },
   de_DE: {
+    81: 'NTFY verbinden',
+    82: 'Verbindet NTFY mit einem eigenen Herausgeber mit reinen Schreibrechten, ohne Tokeneingabe.',
+    83: 'Starten Sie NTFY und richten Sie zuerst eine HTTPS-Adresse ein.',
+    84: 'Der NTFY-Herausgeber konnte nicht verbunden werden.',
+    85: 'NTFY verbunden',
+    86: 'Abonnieren Sie atoll-recovery-health in NTFY. Starten Sie Atoll und bestätigen Sie eine empfangene Meldung. Lokale Meldungen erkennen keinen Ausfall von Zion.',
     0: 'Kopierprozess',
     1: 'Kopierprozess gestartet',
     2: 'Der Kopierprozess konnte seine Konfiguration nicht lesen',
@@ -167,6 +179,12 @@ export default {
     80: 'Verwenden Sie ein eigenes Nextcloud-Konto ohne Administratorrechte. Starten Sie Nextcloud verbinden erneut.',
   },
   pl_PL: {
+    81: 'Połącz NTFY',
+    82: 'Łączy NTFY z osobnym nadawcą tylko do zapisu, bez wpisywania tokena.',
+    83: 'Uruchom NTFY i najpierw skonfiguruj adres HTTPS.',
+    84: 'Nie można połączyć nadawcy NTFY.',
+    85: 'Połączono NTFY',
+    86: 'Zasubskrybuj atoll-recovery-health w NTFY. Uruchom Atoll i potwierdź odebrany alert. Lokalne powiadomienia nie zgłoszą awarii Zion.',
     0: 'Proces kopiowania',
     1: 'Proces kopiowania uruchomiony',
     2: 'Proces kopiowania nie mógł odczytać konfiguracji',
@@ -250,6 +268,12 @@ export default {
     80: 'Użyj osobnego konta Nextcloud bez praw administratora. Uruchom ponownie Połącz Nextcloud.',
   },
   fr_FR: {
+    81: 'Connecter NTFY',
+    82: 'Connecte NTFY avec un éditeur dédié en écriture seule, sans saisir de jeton.',
+    83: 'Démarrez NTFY et configurez d’abord une adresse HTTPS.',
+    84: 'Impossible de connecter l’éditeur NTFY.',
+    85: 'NTFY connecté',
+    86: 'Abonnez-vous à atoll-recovery-health dans NTFY. Démarrez Atoll et confirmez la réception d’une alerte. Les notifications locales ne signalent pas la perte de Zion.',
     0: 'Processus de copie',
     1: 'Processus de copie démarré',
     2: 'Le processus de copie ne peut pas lire sa configuration',

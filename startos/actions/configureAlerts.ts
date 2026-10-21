@@ -58,6 +58,9 @@ export const configureAlerts = sdk.Action.withInput(
     await preparePrivateFiles()
     await alertConfiguration.merge(effects, {
       enabled: input.enabled,
+      provider: 'webhook',
+      token: '',
+      topic: '',
       webhook_url: route,
       generation: randomUUID(),
     })

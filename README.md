@@ -161,3 +161,11 @@ tasks:
   - { action: configure-alerts, severity: important }
 health_checks: [copy, independent-copy-freshness, alerts, alert-delivery]
 ```
+
+### Scoped NTFY connection
+
+**Connect NTFY** uses the installed Start9 NTFY package’s dependent publisher
+action, reads only its exported HTTPS interface metadata and privately saves a
+write-only token for `atoll-recovery-health`. It never reads NTFY volumes or its
+admin password. Generic Configure Alerts remains available and clears a prior
+NTFY token when switching routing. Subscribers need their own read permission.
