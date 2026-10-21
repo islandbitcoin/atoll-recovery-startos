@@ -7,7 +7,7 @@ const { InputSpec, Value } = sdk
 export const configure = sdk.Action.withInput(
   'configure',
   {
-    name: i18n('Configure Backup Copies'),
+    name: i18n('Advanced Transfer Setup'),
     description: i18n(
       'Set scoped R2 read credentials and a dedicated Nextcloud app password. Reuse this action to rotate credentials; locations stay fixed after verification.',
     ),
@@ -165,7 +165,11 @@ export const configure = sdk.Action.withInput(
       },
       nextcloud: { url: url.href, user: input.username, pass: obscured },
     })
-    await configuration.merge(effects, { source, destination })
+    await configuration.merge(effects, {
+      source_kind: 'r2',
+      source,
+      destination,
+    })
     await sdk.action.clearTask(effects, 'atoll-recovery:configure')
     return {
       version: '1',

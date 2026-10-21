@@ -35,12 +35,14 @@ The image supports x86_64 and aarch64. No runtime package download is performed.
 ## Volume and Data Layout
 
 The `main` volume mounts at `/data`. Its `private/` directory holds `rclone.conf`
-`copy.json` and `alerts.json`; `state/` holds copy and notification receipts and writer locks. Both directories
+`copy.json` , `alerts.json` and the private setup journal; `state/` holds copy and notification receipts and writer locks. Both directories
 are restricted to their owner, and the configuration files are owner-readable
 and writable only. Temporary downloaded exports live in a private ephemeral
 directory and disappear after a cycle; remote snapshots are outside this volume.
 
 ## File Models
+
+The private setup journal records pending issuer claims and Nextcloud browser authorization. A successful Nextcloud poll is retained privately until credential configuration commits.
 
 The package directly models `private/rclone.conf` as INI and `private/copy.json`
 and `private/alerts.json` as JSON. Initial setup seeds private file metadata before atomic model writes.
@@ -53,15 +55,15 @@ model and must not be regenerated to clear a health failure.
 
 ## Dependencies
 
-None are declared as StartOS package dependencies. The runner needs outbound
+An optional local Nextcloud dependency activates when installed, for exported HTTPS interface discovery. Remote Nextcloud remains supported. No service credentials or volumes are read through discovery. The runner needs outbound
 access to the configured R2 bucket and Nextcloud account. It does not mount or
 modify another service's volume and does not require Vaultwarden access.
 
 ## Network Access and Interfaces
 
 No inbound interfaces or listening ports are exposed. R2 and Nextcloud transfers
-use outbound HTTPS; the Nextcloud certificate must pass normal trust checks.
-The package creates no public endpoint and does not change either remote service.
+and paired issuer requests use outbound HTTPS; the Nextcloud certificate must pass normal trust checks.
+The copy runner and setup helpers retain the image’s public CA roots and add this StartOS server’s root in ephemeral container storage, so local HTTPS origins can be verified without disabling TLS. The package creates no public endpoint and does not change either remote service.
 
 ## Installation and First-Run Flow
 
@@ -73,7 +75,9 @@ auto-discovered from the server.
 
 ## Actions
 
-Configuration establishes the source and destination and can subsequently
+**Connect Issuer** saves a device secret before claiming an expiring pairing code. The paired credential reads existing encrypted exports; R2 details are not entered. **Connect Nextcloud** discovers/prefills the local public HTTPS origin when available and returns a private browser approval link. **Finish Nextcloud Connection** collects and journals the result privately, rejects administrator credentials, preserves locations and saves the app password without returning it. A committed journal can finish cleanup after interruption. A dedicated non-admin account must already exist; discovery does not create one.
+
+Advanced Transfer Setup establishes the source and destination manually and can subsequently
 replace credentials while the service is stopped. It does not make a transfer
 or certify that supplied access works. Saved secrets are not prefilled or
 returned. **Configure Alerts** selects an HTTPS JSON receiver or explicitly disables notifications while stopped. Every routing change resets delivery confirmation. **Recovery Status** returns only copy health, source age and notification acceptance evidence, including while stopped. The Nextcloud password is obscured through rclone over stdin before
@@ -83,7 +87,7 @@ prevent stale receipts from being reused for a different destination.
 
 ## Tasks
 
-A critical configuration prompt is raised when required configuration is absent.
+Critical Connect Issuer and Connect Nextcloud tasks appear while the corresponding configuration is absent. Existing manual configurations satisfy these checks; the old combined setup task is cleared.
 The same configuration action satisfies it. Initialization clears its replay key
 when configuration is complete, including after restoration. There are no
 cross-service tasks or generated admin accounts. An important setup task remains until an explicit notification choice is saved.
@@ -112,8 +116,8 @@ included in this service's backup. No authenticated escrow restore is performed.
 
 The operational boundaries below must remain explicit when assessing readiness.
 
-1. This candidate has not been installed on Zion. StartOS setup/task handling,
-   real Nextcloud/R2 access and a StartOS backup/restore round trip remain
+1. This setup-flow candidate has not yet been installed on Zion. The previous prerelease installed and its unconfigured status and manual setup actions ran successfully. StartOS setup/task handling,
+   paired issuer access, browser authorization and a StartOS backup/restore round trip remain
    unverified until an approved server test.
 2. There is no automatic issuance fence. HTTPS notifications cannot report loss of the whole package, host or network; an independently hosted monitor must detect missed heartbeats. Displayed health does not enforce the production recovery objective.
 3. Setup accepts only the dedicated scoped R2 and Nextcloud shape, not arbitrary
@@ -138,12 +142,22 @@ file_models:
   - private/rclone.conf
   - private/copy.json
   - private/alerts.json
+  - private/setup.json
 startos_managed_env_vars: []
-dependencies: none
+dependencies: optional local nextcloud
 interfaces: {}
-actions: [configure, configure-alerts, recovery-status]
+actions:
+  [
+    connect-issuer,
+    connect-nextcloud,
+    finish-nextcloud,
+    configure,
+    configure-alerts,
+    recovery-status,
+  ]
 tasks:
-  - { action: configure, severity: critical }
+  - { action: connect-issuer, severity: critical }
+  - { action: connect-nextcloud, severity: critical }
   - { action: configure-alerts, severity: important }
 health_checks: [copy, independent-copy-freshness, alerts, alert-delivery]
 ```

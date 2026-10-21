@@ -28,7 +28,7 @@ from the reviewed commit, then index those exact release assets in Atoll. Do not
 replace an existing release asset or index a different build under its URL.
 
 The packaging repository is `islandbitcoin/atoll-recovery-startos`. The initial
-version is `0.1.0-beta.2:0`; it remains a prerelease until actual StartOS install,
+version is `0.1.0-beta.3:0`; it remains a prerelease until actual StartOS install,
 action/task lifecycle and backup/restore checks succeed. The ops-service is a
 separate package and has no runtime authority in this one.
 
@@ -37,3 +37,10 @@ Its successor seeds valid empty objects, including when recovering existing zero
 files, before SDK parsing. Nonempty files are preserved. The first-install CI smoke
 checks real SDK reads, empty-file repair, private modes and preservation of existing
 and malformed nonempty configuration; it does not simulate StartOS installation.
+
+Paired setup introduces private `setup.json` and a temporary completed Nextcloud
+authorization record. Both belong to the protected volume backup. Never remove
+a successful authorization journal before its credential configuration is saved.
+Existing manual R2 source configurations remain valid through defaults. Switching
+a verified source or destination still requires a reviewed migration. The optional
+Nextcloud dependency discovers only its exported `main`/`ui` HTTPS metadata.
