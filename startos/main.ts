@@ -11,8 +11,10 @@ export const main = sdk.setupMain(async ({ effects }) => {
   if (
     !config?.source ||
     !config.destination ||
-    !stored?.r2.secret_access_key ||
-    !stored.nextcloud.pass
+    !stored?.nextcloud.pass ||
+    (config.source_kind === 'issuer'
+      ? !config.issuer_origin || !config.issuer_id || !config.issuer_secret
+      : !stored.r2.access_key_id || !stored.r2.secret_access_key)
   ) {
     return sdk.Daemons.of(effects)
   }

@@ -5,7 +5,8 @@ import {
   remotes,
   alertConfiguration,
 } from '../fileModels/config'
-import { configure } from '../actions/configure'
+import { connectIssuer } from '../actions/connectIssuer'
+import { connectNextcloud } from '../actions/connectNextcloud'
 import { configureAlerts } from '../actions/configureAlerts'
 import { preparePrivateFiles } from '../utils'
 
@@ -13,21 +14,35 @@ export const requireConfiguration = sdk.setupOnInit(async (effects) => {
   await preparePrivateFiles()
   const config = await configuration.read().const(effects)
   const stored = await remotes.read().const(effects)
-  if (
-    !config?.source ||
-    !config.destination ||
-    !stored?.r2.access_key_id ||
-    !stored.r2.secret_access_key ||
-    !stored.nextcloud.pass
-  ) {
-    await sdk.action.createOwnTask(effects, configure, 'critical', {
+  const sourceReady =
+    config?.source &&
+    (config.source_kind === 'issuer'
+      ? config.issuer_origin && config.issuer_id && config.issuer_secret
+      : stored?.r2.access_key_id && stored.r2.secret_access_key)
+  if (!sourceReady) {
+    await sdk.action.createOwnTask(effects, connectIssuer, 'critical', {
       reason: i18n(
-        'Configure dedicated backup transfer credentials before starting.',
+        'Pair the issuer before starting. Advanced R2 setup is available as a fallback.',
       ),
     })
   } else {
-    await sdk.action.clearTask(effects, 'atoll-recovery:configure')
+    await sdk.action.clearTask(effects, 'atoll-recovery:connect-issuer')
   }
+  if (
+    !config?.destination ||
+    !stored?.nextcloud.url ||
+    !stored.nextcloud.user ||
+    !stored.nextcloud.pass
+  ) {
+    await sdk.action.createOwnTask(effects, connectNextcloud, 'critical', {
+      reason: i18n(
+        'Authorize a dedicated Nextcloud backup account before starting.',
+      ),
+    })
+  } else {
+    await sdk.action.clearTask(effects, 'atoll-recovery:connect-nextcloud')
+  }
+  await sdk.action.clearTask(effects, 'atoll-recovery:configure')
 })
 
 export const requireAlertChoice = sdk.setupOnInit(async (effects) => {

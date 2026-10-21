@@ -11,18 +11,25 @@ A background copier keeps encrypted Cashu ops exports in a dedicated Nextcloud d
 
 ## Getting set up
 
-1. Prepare R2 credentials restricted to reading and listing the dedicated backup bucket. Keep the bucket's `escrow/` prefix available.
-2. Prepare a separate Nextcloud account with access only to backup data and create a revocable app password. Obtain its full HTTPS WebDAV URL from Nextcloud, ending in `/dav/files/USER/`. Its certificate must be trusted; do not disable TLS verification.
-3. Complete **Configure Backup Copies**. Enter credentials privately in that form. Do not send them in chat or include a recovery private key. Use a new dedicated destination directory.
-4. Complete **Configure Alerts** with a private HTTPS receiver URL, or explicitly disable notifications. The receiver must accept JSON POST requests and return a success status without redirecting.
-5. Start the service. **Independent copy freshness** becomes healthy only after a destination copy and its verification manifest are read back successfully. If no export exists yet, wait for the approved exporter schedule and investigate continued failure.
-6. Complete a separate authenticated restoration drill with a designated recovery operator before depending on these backups for production recovery.
+1. Ask the issuer recovery administrator to open the issuer’s `/ops/recovery/setup` page and create a pairing code. Enter the issuer HTTPS origin and that code in **Connect Issuer**. No R2 keys, bucket or account ID are needed.
+2. Prepare a dedicated non-admin Nextcloud backup account. **Connect Nextcloud** prefills a locally discovered public HTTPS origin when available; otherwise enter the server origin. Run it, open its private authorization link, and sign in with the dedicated account. Do not authorize an administrator account. Then run **Finish Nextcloud Connection** to save the app password privately. The app password and WebDAV URL are filled automatically.
+3. Complete **Configure Alerts** with a private HTTPS JSON receiver URL, or explicitly disable notifications. The receiver must accept JSON POST requests and return a success status without redirecting.
+4. Start the service. **Independent copy freshness** becomes healthy only after an encrypted destination copy and its verification manifest are read back successfully. An empty issuer export list is not a verified backup; wait for the approved exporter schedule and investigate continued failure.
+5. Complete a separate authenticated restoration drill with a designated recovery operator before relying on production recovery.
+
+The issuer administrator can revoke the paired connection on the same approval page. The companion cannot trigger exports, provision cards, change custody or decrypt snapshots. Keep authorization links and codes out of chat and logs. If an action is interrupted, retry the same connection before starting another; completed Nextcloud authorization is journaled privately until configuration is committed. A lost issuer claim response can be retried with the same code while it remains valid.
+
+Local Nextcloud discovery reads only exported connection metadata and does not create an account. Account creation is still a one-time administration step. A reviewed Nextcloud provisioning integration would be needed to automate that step safely.
+
+### Advanced direct R2 setup
+
+**Advanced Transfer Setup** retains the manual scoped R2-to-Nextcloud path. Use a bucket-scoped Object Read only credential and a dedicated Nextcloud app password; never use an account-administration token. The Nextcloud URL must end in `/dav/files/USER/` and pass normal TLS checks. Moving between source modes after verified evidence exists requires a reviewed migration.
 
 ## Using your backup copies
 
 The copier checks on a 15-minute interval after each cycle. An export retains its original source timestamp; copying an old export again does not make it fresh. No previous snapshot is automatically deleted.
 
-**Configure Backup Copies** also replaces transfer credentials for the same locations. It never returns saved passwords. After a verified copy exists, keep the R2 account, bucket, Nextcloud URL, username and destination directory fixed; moving backups requires an operator-reviewed migration so old verification receipts cannot certify a new location.
+**Advanced Transfer Setup** also replaces transfer credentials for the same locations. It never returns saved passwords. After a verified copy exists, keep the R2 account, bucket, Nextcloud URL, username and destination directory fixed; moving backups requires an operator-reviewed migration so old verification receipts cannot certify a new location.
 
 At 18 hours of source age the freshness display asks you to investigate. At 24 hours, on a failed copy, or when no check has completed for 30 minutes, health fails. Check transfer access, available storage and the export schedule. Do not delete evidence or overwrite conflicting copies to clear an error. A conflicting destination needs investigation.
 

@@ -17,7 +17,7 @@ with open('/usr/local/bin/rclone', 'wb') as out:
     out.write(binary)
 os.chmod('/usr/local/bin/rclone', 0o755)
 PY
-COPY upstream/tools/backup-copy/copy.py upstream/tools/backup-copy/alerts.py /opt/cashu-copy/
+COPY upstream/tools/backup-copy/copy.py upstream/tools/backup-copy/alerts.py upstream/tools/backup-copy/issuer_source.py upstream/tools/backup-copy/connect.py /opt/cashu-copy/
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 WORKDIR /opt/cashu-copy
 CMD ["python", "copy.py", "--config", "/data/private/copy.json", "--state", "/data/state/copy.json"]

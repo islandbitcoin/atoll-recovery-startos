@@ -31,6 +31,10 @@ export const configuration = FileHelper.json(
       .literal('/data/private/rclone.conf')
       .catch('/data/private/rclone.conf'),
     source: z.string().catch(''),
+    source_kind: z.enum(['r2', 'issuer']).catch('r2'),
+    issuer_origin: z.string().catch(''),
+    issuer_id: z.string().catch(''),
+    issuer_secret: z.string().catch(''),
     destination: z.string().catch(''),
   }),
 )
@@ -41,5 +45,30 @@ export const alertConfiguration = FileHelper.json(
     enabled: z.boolean().catch(false),
     webhook_url: z.string().catch(''),
     generation: z.string().catch(''),
+  }),
+)
+
+export const setupState = FileHelper.json(
+  { base: sdk.volumes.main, subpath: 'private/setup.json' },
+  z.looseObject({
+    pending_issuer: z
+      .looseObject({
+        origin: z.string(),
+        code_hash: z.string(),
+        secret: z.string(),
+      })
+      .nullable()
+      .catch(null),
+    nextcloud: z
+      .looseObject({
+        origin: z.string(),
+        login: z.string(),
+        poll_path: z.string(),
+        poll_token: z.string(),
+        created: z.number(),
+        committed: z.boolean().catch(false),
+      })
+      .nullable()
+      .catch(null),
   }),
 )
