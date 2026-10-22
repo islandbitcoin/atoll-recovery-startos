@@ -75,6 +75,23 @@ auto-discovered from the server.
 
 ## Actions
 
+**Connect Additional Issuer** pairs up to eight additional issuers without
+retargeting the primary connection. Each gets a unique name, a separate directory
+in the existing dedicated Nextcloud account, and its own private reader secret,
+copy history, notification state, daemon and health checks. A lost claim response
+reuses the journaled device secret. Repeating the same name, origin and directory
+can rotate that reader; changing its issuer identity or locations is rejected.
+Its receipt toggle still requires a separate issuer-side attestation grant.
+Notification routing is shared, with named alerts for additional issuers.
+
+The private `additional-issuers.json` registry preserves unknown keys and fails
+closed on corrupt history. Derived private runtime configuration lives under
+`private/issuers/<id>/`; verification state lives under `state/issuers/<id>/`.
+Materializing runtime configuration never initializes or replaces evidence.
+Enrolling an additional issuer locks shared Nextcloud coordinates even before
+the primary has verified a copy. Credential rotation for those same coordinates
+remains supported. Status reports each issuer separately.
+
 **Connect Issuer** saves a device secret before claiming an expiring pairing code. The paired credential reads existing encrypted exports; R2 details are not entered. **Connect Nextcloud** discovers/prefills the local public HTTPS origin when available and returns a private browser approval link. **Finish Nextcloud Connection** collects and journals the result privately, rejects administrator credentials, preserves locations and saves the app password without returning it. A committed journal can finish cleanup after interruption. A dedicated non-admin account must already exist; discovery does not create one.
 
 Advanced Transfer Setup establishes the source and destination manually and can subsequently
@@ -128,10 +145,15 @@ included in this service's backup. No authenticated escrow restore is performed.
 
 The operational boundaries below must remain explicit when assessing readiness.
 
-1. This setup-flow candidate has not yet been installed on Zion. The previous prerelease installed and its unconfigured status and manual setup actions ran successfully. StartOS setup/task handling,
-   paired issuer access, browser authorization and a StartOS backup/restore round trip remain
-   unverified until an approved server test.
-2. There is no automatic issuance fence. HTTPS notifications cannot report loss of the whole package, host or network; an independently hosted monitor must detect missed heartbeats. Displayed health does not enforce the production recovery objective.
+1. The installed release on Zion passed staging pairing,
+   Nextcloud read-back and issuer-receipt checks. Additional issuer behavior in
+   the new candidate still needs actual StartOS upgrade and per-issuer runtime verification;
+   compilation and container checks do not establish it. A StartOS volume
+   backup/restore round trip also remains separate evidence.
+2. The package does not itself enforce issuance. A compatible issuer can require
+   independently verified receipts using its separately reviewed policy. HTTPS
+   notifications cannot report loss of the whole package, host or network; an
+   independently hosted monitor must detect missed heartbeats.
 3. Setup accepts only the dedicated scoped R2 and Nextcloud shape, not arbitrary
    rclone remotes. Backend TLS verification is not disabled.
 4. Location changes after verified evidence exists require a reviewed migration. Do not bypass that guard by
@@ -155,12 +177,14 @@ file_models:
   - private/copy.json
   - private/alerts.json
   - private/setup.json
+  - private/additional-issuers.json
 startos_managed_env_vars: []
 dependencies: optional local nextcloud
 interfaces: {}
 actions:
   [
     connect-issuer,
+    connect-additional-issuer,
     configure-copy-receipts,
     connect-nextcloud,
     finish-nextcloud,
