@@ -1,6 +1,13 @@
 import { LangDict } from './default'
 export default {
   es_ES: {
+    92: 'Conectar emisor adicional',
+    93: 'Conserve el emisor existente y añada un directorio, historial de copias y controles de estado separados.',
+    94: 'Nombre de la copia',
+    95: 'Conecte primero el emisor principal y Nextcloud.',
+    96: 'Elija un nombre, emisor y directorio distintos. Las ubicaciones existentes no se pueden sustituir.',
+    97: 'Se pueden conectar como máximo ocho emisores adicionales.',
+
     87: 'Configurar recibos de copia',
     88: 'Informe de la verificación de lectura al emisor que autorizó las atestaciones de copia.',
     89: 'Activar recibos de copias verificadas',
@@ -96,6 +103,13 @@ export default {
     80: 'Use una cuenta dedicada de Nextcloud sin privilegios administrativos. Vuelva a iniciar Conectar Nextcloud.',
   },
   de_DE: {
+    92: 'Weiteren Aussteller verbinden',
+    93: 'Behalten Sie den vorhandenen Aussteller und ergänzen Sie ein separates Sicherungsverzeichnis mit eigenem Kopierverlauf und Zustandsprüfungen.',
+    94: 'Name der Sicherung',
+    95: 'Verbinden Sie zuerst den primären Aussteller und Nextcloud.',
+    96: 'Wählen Sie einen eindeutigen Namen, Aussteller und ein separates Verzeichnis. Vorhandene Speicherorte können nicht ersetzt werden.',
+    97: 'Es können höchstens acht weitere Aussteller verbunden werden.',
+
     87: 'Kopierbestätigungen konfigurieren',
     88: 'Melden Sie die Rückleseprüfung an einen Aussteller, der Kopierbestätigungen gesondert erlaubt hat.',
     89: 'Bestätigungen geprüfter Kopien aktivieren',
@@ -191,6 +205,13 @@ export default {
     80: 'Verwenden Sie ein eigenes Nextcloud-Konto ohne Administratorrechte. Starten Sie Nextcloud verbinden erneut.',
   },
   pl_PL: {
+    92: 'Połącz dodatkowego wystawcę',
+    93: 'Zachowaj istniejącego wystawcę i dodaj osobny katalog kopii, historię kopiowania oraz kontrole stanu.',
+    94: 'Nazwa kopii',
+    95: 'Najpierw połącz głównego wystawcę i Nextcloud.',
+    96: 'Wybierz inną nazwę, wystawcę i katalog. Istniejących lokalizacji nie można zastąpić.',
+    97: 'Można połączyć maksymalnie ośmiu dodatkowych wystawców.',
+
     87: 'Konfiguruj potwierdzenia kopii',
     88: 'Zgłaszaj weryfikację odczytu do wystawcy, który osobno zezwolił na potwierdzanie kopii.',
     89: 'Włącz potwierdzenia zweryfikowanych kopii',
@@ -286,6 +307,13 @@ export default {
     80: 'Użyj osobnego konta Nextcloud bez praw administratora. Uruchom ponownie Połącz Nextcloud.',
   },
   fr_FR: {
+    92: 'Connecter un émetteur supplémentaire',
+    93: 'Conservez l’émetteur existant et ajoutez un répertoire, un historique de copie et des contrôles distincts.',
+    94: 'Nom de la sauvegarde',
+    95: 'Connectez d’abord l’émetteur principal et Nextcloud.',
+    96: 'Choisissez un nom, un émetteur et un répertoire distincts. Les emplacements existants ne peuvent pas être remplacés.',
+    97: 'Huit émetteurs supplémentaires au maximum peuvent être connectés.',
+
     87: 'Configurer les reçus de copie',
     88: 'Signalez la vérification par relecture à un émetteur ayant autorisé séparément les attestations de copie.',
     89: 'Activer les reçus de copies vérifiées',

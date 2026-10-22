@@ -52,9 +52,9 @@ jobs:
           }
           async function check() {
             const {sdk} = require(process.cwd() + '/startos/sdk.ts')
-            const {preparePrivateFiles} = require(process.cwd() + '/startos/utils.ts')
             const root = await fs.mkdtemp('/tmp/atoll-init-')
             sdk.volumes.main.path = root
+            const {preparePrivateFiles} = require(process.cwd() + '/startos/utils.ts')
             const {configuration, alertConfiguration, remotes} = require(process.cwd() + '/startos/fileModels/config.ts')
             try {
               await preparePrivateFiles()
@@ -129,7 +129,71 @@ jobs:
               assert.equal(JSON.stringify(configured).includes('a'.repeat(43)), false)
               await configureCopyReceipts.run({effects: receiptEffects, input: {enabled: false}})
               assert.equal((await configuration.read().once()).attest_copies, false)
-              console.log('First-install SDK reads, private modes, retained configuration, helper trust environment and explicit copy receipt settings passed.')
+              // A lost additional-issuer claim must reuse its private device secret;
+              // successful enrollment must not replace primary config or evidence.
+              const {additionalIssuers} = require(process.cwd() + '/startos/fileModels/issuers.ts')
+              const {connectAdditionalIssuer} = require(process.cwd() + '/startos/actions/connectAdditionalIssuer.ts')
+              const additionalEffects = {eventId: 'additional-issuer-test'}
+              await connectAdditionalIssuer.getInput({effects: additionalEffects})
+              const primary = {...await configuration.read().once(), destination: 'nextcloud:staging'}
+              await fs.writeFile(path, JSON.stringify(primary))
+              await remotes.merge(receiptEffects, {nextcloud: {url: 'https://cloud.invalid/remote.php/dav/files/backup', user: 'backup', pass: 'obscured-fixture'}})
+              const before = await fs.readFile(path, 'utf8')
+              const evidence = JSON.stringify({version: 1, verified: {retained: true}, latest: {exported_at: 1}})
+              await fs.writeFile(root + '/state/copy.json', evidence)
+              const input = {name: 'Production', origin: 'https://production.invalid', code: 'b'.repeat(43), directory: 'production', receipts: true}
+              let claims = []
+              utils.connectionRequest = async (_effects, operation, request) => {
+                assert.equal(operation, 'pair-issuer')
+                claims.push(request.secret)
+                if (claims.length === 1) throw new Error('fixture lost response')
+                return {issuer_id: '22222222-2222-4222-8222-222222222222', connection_id: '33333333-3333-4333-8333-333333333333'}
+              }
+              await assert.rejects(connectAdditionalIssuer.run({effects: additionalEffects, input}))
+              assert.equal((await additionalIssuers.read().once()).profiles.length, 0)
+              const connected = await connectAdditionalIssuer.run({effects: additionalEffects, input})
+              assert.equal(claims[0], claims[1])
+              assert.equal(JSON.stringify(connected).includes(claims[1]), false)
+              await assert.rejects(connectAdditionalIssuer.run({effects: additionalEffects, input: {...input, origin: 'https://other.invalid', directory: 'STAGING'}}))
+              assert.equal(claims.length, 2)
+              const profile = (await additionalIssuers.read().once()).profiles[0]
+              assert.equal(profile.destination, 'nextcloud:production')
+              assert.equal(profile.attest_copies, true)
+              await utils.prepareIssuerFiles(profile, await alertConfiguration.read().once())
+              const extraState = root + '/state/issuers/' + profile.id + '/copy.json'
+              await fs.writeFile(extraState, evidence)
+              await utils.prepareIssuerFiles({...profile, issuer_secret: 'c'.repeat(43)}, await alertConfiguration.read().once())
+              assert.equal(await fs.readFile(extraState, 'utf8'), evidence)
+              assert.equal(await fs.readFile(path, 'utf8'), before)
+              assert.equal(await fs.readFile(root + '/state/copy.json', 'utf8'), evidence)
+              await fs.unlink(root + '/state/copy.json')
+              assert.equal(await utils.hasVerifiedEvidence(), true)
+              await fs.writeFile(root + '/state/copy.json', evidence)
+              // Exercise the real main composition while recording daemon declarations.
+              // Separate paths and health IDs keep one issuer's receipts out of another.
+              for (const model of [configuration, remotes, alertConfiguration, additionalIssuers]) {
+                const read = model.read.bind(model)
+                model.read = () => {const value = read(); return {once: () => value.once(), const: () => value.once()}}
+              }
+              const daemons = [], checks = []
+              const chain = {addDaemon(id, options) {daemons.push({id, ...options}); return this},
+                addHealthCheck(id, options) {checks.push({id, ...options}); return this}}
+              sdk.setupMain = fn => fn
+              sdk.Daemons.of = () => chain
+              sdk.SubContainer.of = () => ({})
+              utils.prepareTrust = async () => undefined
+              const {main} = require(process.cwd() + '/startos/main.ts')
+              await main({effects: receiptEffects})
+              const copies = daemons.filter(item => item.exec.command.includes('/opt/cashu-copy/copy.py'))
+              assert.equal(copies.length, 2)
+              assert.equal(new Set(copies.map(item => item.exec.command.at(-1))).size, 2)
+              assert.equal(new Set(checks.map(item => item.id)).size, checks.length)
+              assert.equal(await fs.readFile(root + '/state/copy.json', 'utf8'), evidence)
+              assert.equal(await fs.readFile(extraState, 'utf8'), evidence)
+              await fs.writeFile(root + '/private/additional-issuers.json', '')
+              await assert.rejects(utils.preparePrivateFiles())
+              assert.equal(await fs.readFile(root + '/state/copy.json', 'utf8'), evidence)
+              console.log('First-install, lost-claim recovery, immutable primary evidence and independent issuer daemon paths passed.')
             } finally { await fs.rm(root, {recursive: true, force: true}) }
           }
           check().catch(error => { console.error(error); process.exitCode = 1 })

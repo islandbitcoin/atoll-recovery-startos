@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '0.1.0-beta.6:1',
+  version: '0.1.0-beta.7:0',
   releaseNotes: {
     en_US:
-      'Keeps verified legacy archives without letting missing metadata block a newer eligible backup. An ineligible newest export still fails health; old files never certify freshness.',
+      'Adds separate issuer connections, destinations, copy history, health checks and named notifications while preserving existing backups. Re-pair the same coordinates to rotate an additional reader without clearing evidence.',
     es_ES:
-      'Conserva archivos antiguos verificados sin que sus metadatos ausentes bloqueen una copia reciente válida. La exportación más reciente no válida sigue fallando; los archivos antiguos no certifican la vigencia.',
+      'Añade conexiones, destinos, historiales, controles de estado y avisos independientes por emisor, conservando las copias existentes. Vuelva a vincular las mismas ubicaciones para rotar un lector adicional sin borrar pruebas.',
     de_DE:
-      'Bewahrt geprüfte Altarchive, ohne dass fehlende Metadaten eine neuere gültige Sicherung blockieren. Ein ungeeigneter neuester Export bleibt fehlerhaft; alte Dateien belegen keine Aktualität.',
+      'Ergänzt separate Ausstellerverbindungen, Ziele, Kopierverläufe, Zustandsprüfungen und benannte Meldungen, ohne vorhandene Sicherungen zu ändern. Erneutes Verbinden derselben Speicherorte erneuert einen zusätzlichen Leser ohne Löschen der Nachweise.',
     pl_PL:
-      'Zachowuje zweryfikowane starsze archiwa bez blokowania nowszej prawidłowej kopii z powodu brakujących metadanych. Nieprawidłowy najnowszy eksport nadal powoduje błąd; stare pliki nie potwierdzają aktualności.',
+      'Dodaje osobne połączenia wystawców, lokalizacje, historie kopii, kontrole stanu i nazwane powiadomienia, zachowując istniejące kopie. Ponowne sparowanie tych samych lokalizacji odnawia dodatkowego czytelnika bez usuwania dowodów.',
     fr_FR:
-      'Conserve les archives anciennes vérifiées sans bloquer une sauvegarde récente admissible faute de métadonnées. Un export récent non admissible reste en échec ; les anciens fichiers ne prouvent pas la fraîcheur.',
+      'Ajoute des connexions, destinations, historiques, contrôles et notifications distincts par émetteur en conservant les sauvegardes existantes. Réassociez les mêmes emplacements pour renouveler un lecteur supplémentaire sans effacer les preuves.',
   },
   migrations: {
     up: async ({ effects }) => {},

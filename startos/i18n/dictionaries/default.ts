@@ -92,6 +92,12 @@ const dict = {
   'Enable verified-copy receipts': 89,
   'Copy receipts require a paired issuer. Connect Issuer first.': 90,
   'Copy receipt settings saved. If enabled, the issuer must separately allow copy attestations. Start Atoll and verify issuer backup health.': 91,
+  'Connect Additional Issuer': 92,
+  'Keep the existing issuer and add a separate backup directory, copy history and health checks.': 93,
+  'Backup name': 94,
+  'Connect the primary issuer and Nextcloud first.': 95,
+  'Choose a distinct backup name, issuer and directory. Existing locations cannot be replaced.': 96,
+  'At most eight additional issuers can be connected.': 97,
 } as const
 export type I18nKey = keyof typeof dict
 export type LangDict = Record<(typeof dict)[I18nKey], string>
