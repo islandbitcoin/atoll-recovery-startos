@@ -90,7 +90,9 @@ stopped. It defaults to off for new and existing configurations. Enabling requir
 a paired issuer, whose recovery administrator must separately grant copy
 attestation on the issuer approval page. The runner submits only after destination
 ciphertext and manifest read-back. Delivery failure fails the cycle and retries
-immutable artifacts; accepted issuer snapshot time drives health. No source,
+immutable artifacts; accepted issuer snapshot time drives health. Older verified
+archives without metadata remain stored without invalidating a newer eligible
+snapshot; an ineligible newest export fails health. No source,
 destination or credential changes accompany this action. Installed-package
 behavior still requires a bounded StartOS upgrade/drill; compilation and container
 checks alone do not establish it.

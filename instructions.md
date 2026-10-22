@@ -35,7 +35,9 @@ successful read-back of both the encrypted artifact and its manifest. An issuer
 without the new endpoint or permission fails the cycle; investigate rather than
 clearing verification state. Disabling receipts is also a stopped-service action;
 it does not remove the issuer's permission or make its issuance gate healthy.
-Revoke that permission separately if needed. No R2 details or recovery key are
+Revoke that permission separately if needed. Older archives remain copyable
+without receipt metadata but never certify freshness. An ineligible newest export
+fails health. No R2 details or recovery key are
 entered. Complete a reviewed staging drill before enabling production enforcement.
 
 ### Advanced direct R2 setup

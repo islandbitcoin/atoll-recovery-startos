@@ -62,3 +62,11 @@ manifests. The new stopped-service action changes only that setting; the issuer
 administrator must separately grant authority. No state or credential migration
 is needed. The prior CA distrust layer remains in the Dockerfile. Verify actual
 StartOS upgrade, receipt authority and outage recovery before production use.
+
+
+## 0.1.0-beta.6:1
+
+Preserves verified legacy archives when receipt mode is enabled. Only an explicitly
+ineligible older archive is skipped for attestation; a newest ineligible export,
+authorization error or unsupported endpoint still fails health. State and immutable
+manifest formats are unchanged. Existing receipt settings are retained.
