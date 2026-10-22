@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '0.1.0-beta.6:0',
+  version: '0.1.0-beta.6:1',
   releaseNotes: {
     en_US:
-      'Adds optional verified-copy receipts. Existing readers remain read-only until a separate issuer grant and explicit configuration. Also stops trusting certificates from a compromised certificate authority (eMudhra).',
+      'Keeps verified legacy archives without letting missing metadata block a newer eligible backup. An ineligible newest export still fails health; old files never certify freshness.',
     es_ES:
-      'Añade recibos opcionales de copias verificadas. Los lectores existentes siguen siendo de solo lectura hasta la autorización del emisor y la configuración explícita. Deja de confiar en los certificados de una autoridad de certificación comprometida (eMudhra).',
+      'Conserva archivos antiguos verificados sin que sus metadatos ausentes bloqueen una copia reciente válida. La exportación más reciente no válida sigue fallando; los archivos antiguos no certifican la vigencia.',
     de_DE:
-      'Optionale Bestätigungen geprüfter Kopien. Bestehende Leser bleiben bis zur separaten Freigabe des Ausstellers und ausdrücklichen Konfiguration schreibgeschützt. Vertraut keinen Zertifikaten einer kompromittierten Zertifizierungsstelle mehr (eMudhra).',
+      'Bewahrt geprüfte Altarchive, ohne dass fehlende Metadaten eine neuere gültige Sicherung blockieren. Ein ungeeigneter neuester Export bleibt fehlerhaft; alte Dateien belegen keine Aktualität.',
     pl_PL:
-      'Dodaje opcjonalne potwierdzenia zweryfikowanych kopii. Istniejące połączenia zachowują dostęp tylko do odczytu do osobnej zgody wystawcy i jawnej konfiguracji. Przestaje ufać certyfikatom ze skompromitowanego urzędu certyfikacji (eMudhra).',
+      'Zachowuje zweryfikowane starsze archiwa bez blokowania nowszej prawidłowej kopii z powodu brakujących metadanych. Nieprawidłowy najnowszy eksport nadal powoduje błąd; stare pliki nie potwierdzają aktualności.',
     fr_FR:
-      'Ajoute des reçus facultatifs de copies vérifiées. Les lecteurs existants restent en lecture seule sans autorisation distincte de l’émetteur et configuration explicite. Ne fait plus confiance aux certificats d’une autorité de certification compromise (eMudhra).',
+      'Conserve les archives anciennes vérifiées sans bloquer une sauvegarde récente admissible faute de métadonnées. Un export récent non admissible reste en échec ; les anciens fichiers ne prouvent pas la fraîcheur.',
   },
   migrations: {
     up: async ({ effects }) => {},
