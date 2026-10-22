@@ -23,7 +23,7 @@ Local Nextcloud discovery reads only exported connection metadata and does not c
 
 ### Optional issuer copy receipts
 
-This upgrade leaves receipts off. To prepare an issuer that enforces backup
+Copy receipts are off by default. To prepare an issuer that enforces backup
 freshness, ask its recovery administrator to sign into `/ops/recovery/setup`,
 refresh the connection list, and choose **Allow copy attestations** for this
 reader. This permission lets Atoll report verified backups that may unblock
