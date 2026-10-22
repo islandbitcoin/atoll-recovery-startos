@@ -52,3 +52,13 @@ matching the working pairing helper. The Cloudflare staging edge rejected
 Python’s default user agent before invoking the Worker. Credentials, source and
 destination locations, retained receipts and notification settings are preserved.
 This fixes transport compatibility; it does not relax authentication or TLS.
+
+
+## 0.1.0-beta.6
+
+Pins the reviewed issuer receipt runner. `attest_copies` defaults to false through
+the real SDK schema, preserving existing reader behavior and stable destination
+manifests. The new stopped-service action changes only that setting; the issuer
+administrator must separately grant authority. No state or credential migration
+is needed. The prior CA distrust layer remains in the Dockerfile. Verify actual
+StartOS upgrade, receipt authority and outage recovery before production use.

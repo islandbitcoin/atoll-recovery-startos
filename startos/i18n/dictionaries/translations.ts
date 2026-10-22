@@ -1,6 +1,12 @@
 import { LangDict } from './default'
 export default {
   es_ES: {
+    87: 'Configurar recibos de copia',
+    88: 'Informe de la verificación de lectura al emisor que autorizó las atestaciones de copia.',
+    89: 'Activar recibos de copias verificadas',
+    90: 'Los recibos requieren un emisor vinculado. Conecte el emisor primero.',
+    91: 'Ajustes guardados. Si se activan, el emisor debe autorizar las atestaciones por separado. Inicie Atoll y verifique el estado de las copias en el emisor.',
+
     81: 'Conectar NTFY',
     82: 'Conecte NTFY con un emisor dedicado de solo escritura, sin introducir tokens.',
     83: 'Inicie NTFY y configure primero una dirección HTTPS.',
@@ -90,6 +96,12 @@ export default {
     80: 'Use una cuenta dedicada de Nextcloud sin privilegios administrativos. Vuelva a iniciar Conectar Nextcloud.',
   },
   de_DE: {
+    87: 'Kopierbestätigungen konfigurieren',
+    88: 'Melden Sie die Rückleseprüfung an einen Aussteller, der Kopierbestätigungen gesondert erlaubt hat.',
+    89: 'Bestätigungen geprüfter Kopien aktivieren',
+    90: 'Kopierbestätigungen benötigen einen gekoppelten Aussteller. Verbinden Sie zuerst den Aussteller.',
+    91: 'Einstellungen gespeichert. Der Aussteller muss Kopierbestätigungen separat erlauben. Starten Sie Atoll und prüfen Sie den Sicherungsstatus beim Aussteller.',
+
     81: 'NTFY verbinden',
     82: 'Verbindet NTFY mit einem eigenen Herausgeber mit reinen Schreibrechten, ohne Tokeneingabe.',
     83: 'Starten Sie NTFY und richten Sie zuerst eine HTTPS-Adresse ein.',
@@ -179,6 +191,12 @@ export default {
     80: 'Verwenden Sie ein eigenes Nextcloud-Konto ohne Administratorrechte. Starten Sie Nextcloud verbinden erneut.',
   },
   pl_PL: {
+    87: 'Konfiguruj potwierdzenia kopii',
+    88: 'Zgłaszaj weryfikację odczytu do wystawcy, który osobno zezwolił na potwierdzanie kopii.',
+    89: 'Włącz potwierdzenia zweryfikowanych kopii',
+    90: 'Potwierdzenia wymagają sparowanego wystawcy. Najpierw połącz wystawcę.',
+    91: 'Ustawienia zapisano. Wystawca musi osobno zezwolić na potwierdzenia. Uruchom Atoll i sprawdź stan kopii u wystawcy.',
+
     81: 'Połącz NTFY',
     82: 'Łączy NTFY z osobnym nadawcą tylko do zapisu, bez wpisywania tokena.',
     83: 'Uruchom NTFY i najpierw skonfiguruj adres HTTPS.',
@@ -268,6 +286,12 @@ export default {
     80: 'Użyj osobnego konta Nextcloud bez praw administratora. Uruchom ponownie Połącz Nextcloud.',
   },
   fr_FR: {
+    87: 'Configurer les reçus de copie',
+    88: 'Signalez la vérification par relecture à un émetteur ayant autorisé séparément les attestations de copie.',
+    89: 'Activer les reçus de copies vérifiées',
+    90: 'Les reçus nécessitent un émetteur associé. Connectez cet émetteur en premier.',
+    91: 'Paramètres enregistrés. Si les reçus sont activés, leur autorisation distincte par l’émetteur est requise. Démarrez Atoll et vérifiez la santé des sauvegardes auprès de l’émetteur.',
+
     81: 'Connecter NTFY',
     82: 'Connecte NTFY avec un éditeur dédié en écriture seule, sans saisir de jeton.',
     83: 'Démarrez NTFY et configurez d’abord une adresse HTTPS.',

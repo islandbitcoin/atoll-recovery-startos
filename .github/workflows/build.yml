@@ -116,7 +116,20 @@ jobs:
               await connectNtfy.run({effects: {}, input: {}})
               assert.equal(grants, 1)
               assert.notEqual((await alertConfiguration.read().once()).generation, route.generation)
-              console.log('First-install SDK reads, private modes, retained configuration and helper trust environment passed.')
+              await fs.writeFile(path, JSON.stringify({source_kind: 'r2', source: 'r2:fixture/escrow', unknown: 'preserve'}))
+              assert.equal((await configuration.read().once()).attest_copies, false)
+              const {configureCopyReceipts} = require(process.cwd() + '/startos/actions/configureCopyReceipts.ts')
+              const receiptEffects = {eventId: 'copy-receipt-test'}
+              await configureCopyReceipts.getInput({effects: receiptEffects})
+              await assert.rejects(configureCopyReceipts.run({effects: receiptEffects, input: {enabled: true}}))
+              await fs.writeFile(path, JSON.stringify({source_kind: 'issuer', issuer_id: '11111111-2222-4333-8444-555555555555', issuer_origin: 'https://issuer.invalid', issuer_secret: 'a'.repeat(43), source: 'issuer:11111111-2222-4333-8444-555555555555', unknown: 'preserve'}))
+              const configured = await configureCopyReceipts.run({effects: receiptEffects, input: {enabled: true}})
+              assert.equal((await configuration.read().once()).attest_copies, true)
+              assert.equal((await configuration.read().once()).unknown, 'preserve')
+              assert.equal(JSON.stringify(configured).includes('a'.repeat(43)), false)
+              await configureCopyReceipts.run({effects: receiptEffects, input: {enabled: false}})
+              assert.equal((await configuration.read().once()).attest_copies, false)
+              console.log('First-install SDK reads, private modes, retained configuration, helper trust environment and explicit copy receipt settings passed.')
             } finally { await fs.rm(root, {recursive: true, force: true}) }
           }
           check().catch(error => { console.error(error); process.exitCode = 1 })

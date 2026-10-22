@@ -21,6 +21,23 @@ The issuer administrator can revoke the paired connection on the same approval p
 
 Local Nextcloud discovery reads only exported connection metadata and does not create an account. Account creation is still a one-time administration step. A reviewed Nextcloud provisioning integration would be needed to automate that step safely.
 
+### Optional issuer copy receipts
+
+This upgrade leaves receipts off. To prepare an issuer that enforces backup
+freshness, ask its recovery administrator to sign into `/ops/recovery/setup`,
+refresh the connection list, and choose **Allow copy attestations** for this
+reader. This permission lets Atoll report verified backups that may unblock
+issuance; it does not verify a copy by itself.
+
+Stop Atoll, run **Configure Copy Receipts**, enable receipts, and start Atoll.
+Check Recovery Status and the issuer's backup health. Each receipt follows
+successful read-back of both the encrypted artifact and its manifest. An issuer
+without the new endpoint or permission fails the cycle; investigate rather than
+clearing verification state. Disabling receipts is also a stopped-service action;
+it does not remove the issuer's permission or make its issuance gate healthy.
+Revoke that permission separately if needed. No R2 details or recovery key are
+entered. Complete a reviewed staging drill before enabling production enforcement.
+
 ### Advanced direct R2 setup
 
 **Advanced Transfer Setup** retains the manual scoped R2-to-Nextcloud path. Use a bucket-scoped Object Read only credential and a dedicated Nextcloud app password; never use an account-administration token. The Nextcloud URL must end in `/dav/files/USER/` and pass normal TLS checks. Moving between source modes after verified evidence exists requires a reviewed migration.
