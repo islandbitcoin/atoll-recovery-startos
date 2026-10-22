@@ -44,3 +44,11 @@ a successful authorization journal before its credential configuration is saved.
 Existing manual R2 source configurations remain valid through defaults. Switching
 a verified source or destination still requires a reviewed migration. The optional
 Nextcloud dependency discovers only its exported `main`/`ui` HTTPS metadata.
+
+## 0.1.0-beta.5
+
+Paired source listing and download now identify themselves as Atoll Recovery,
+matching the working pairing helper. The Cloudflare staging edge rejected
+Python’s default user agent before invoking the Worker. Credentials, source and
+destination locations, retained receipts and notification settings are preserved.
+This fixes transport compatibility; it does not relax authentication or TLS.

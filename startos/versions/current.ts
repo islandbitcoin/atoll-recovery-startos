@@ -1,17 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '0.1.0-beta.4:0',
+  version: '0.1.0-beta.5:0',
   releaseNotes: {
     en_US:
-      'Connect the existing Start9 NTFY service with a private write-only recovery publisher',
+      'Fix Cloudflare compatibility for paired export listing and downloads',
     es_ES:
-      'Conecta NTFY de Start9 con un emisor privado de recuperación de solo escritura',
+      'Corrige la compatibilidad con Cloudflare al listar y descargar exportaciones vinculadas',
     de_DE:
-      'Verbindet Start9 NTFY mit einem privaten Wiederherstellungsherausgeber mit Schreibrechten',
-    pl_PL: 'Łączy Start9 NTFY z prywatnym nadawcą odzyskiwania tylko do zapisu',
+      'Behebt die Cloudflare-Kompatibilität beim Auflisten und Herunterladen verbundener Exporte',
+    pl_PL:
+      'Poprawia zgodność z Cloudflare podczas wyświetlania i pobierania powiązanych eksportów',
     fr_FR:
-      'Connecte NTFY de Start9 avec un éditeur privé de récupération en écriture seule',
+      'Corrige la compatibilité Cloudflare pour la liste et le téléchargement des exports associés',
   },
   migrations: {
     up: async ({ effects }) => {},
