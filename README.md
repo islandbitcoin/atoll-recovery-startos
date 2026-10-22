@@ -85,6 +85,16 @@ INI storage; obscuring is not encryption, so filesystem permissions still matter
 Endpoint/account/bucket/user/directory changes are rejected once verified evidence exists to
 prevent stale receipts from being reused for a different destination.
 
+**Configure Copy Receipts** explicitly enables or disables issuer attestations while
+stopped. It defaults to off for new and existing configurations. Enabling requires
+a paired issuer, whose recovery administrator must separately grant copy
+attestation on the issuer approval page. The runner submits only after destination
+ciphertext and manifest read-back. Delivery failure fails the cycle and retries
+immutable artifacts; accepted issuer snapshot time drives health. No source,
+destination or credential changes accompany this action. Installed-package
+behavior still requires a bounded StartOS upgrade/drill; compilation and container
+checks alone do not establish it.
+
 ## Tasks
 
 Critical Connect Issuer and Connect Nextcloud tasks appear while the corresponding configuration is absent. Existing manual configurations satisfy these checks; the old combined setup task is cleared.
@@ -149,10 +159,12 @@ interfaces: {}
 actions:
   [
     connect-issuer,
+    configure-copy-receipts,
     connect-nextcloud,
     finish-nextcloud,
     configure,
     configure-alerts,
+    connect-ntfy,
     recovery-status,
   ]
 tasks:

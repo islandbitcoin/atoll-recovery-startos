@@ -87,6 +87,11 @@ const dict = {
   'Unable to connect the NTFY publisher.': 84,
   'NTFY connected': 85,
   'Subscribe to atoll-recovery-health in NTFY. Start Atoll and confirm a received alert. Local notifications cannot report loss of Zion.': 86,
+  'Configure Copy Receipts': 87,
+  'Report destination read-back to an issuer that separately authorized copy attestations.': 88,
+  'Enable verified-copy receipts': 89,
+  'Copy receipts require a paired issuer. Connect Issuer first.': 90,
+  'Copy receipt settings saved. If enabled, the issuer must separately allow copy attestations. Start Atoll and verify issuer backup health.': 91,
 } as const
 export type I18nKey = keyof typeof dict
 export type LangDict = Record<(typeof dict)[I18nKey], string>

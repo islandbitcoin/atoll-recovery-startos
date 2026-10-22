@@ -35,6 +35,7 @@ export const configuration = FileHelper.json(
     issuer_origin: z.string().catch(''),
     issuer_id: z.string().catch(''),
     issuer_secret: z.string().catch(''),
+    attest_copies: z.boolean().catch(false),
     destination: z.string().catch(''),
   }),
 )

@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '0.1.0-beta.5:1',
+  version: '0.1.0-beta.6:0',
   releaseNotes: {
     en_US:
-      'Stops trusting certificates from a compromised certificate authority (eMudhra).',
+      'Adds optional verified-copy receipts. Existing readers remain read-only until a separate issuer grant and explicit configuration.',
     es_ES:
-      'Deja de confiar en los certificados de una autoridad de certificación comprometida (eMudhra).',
+      'Añade recibos opcionales de copias verificadas. Los lectores existentes siguen siendo de solo lectura hasta la autorización del emisor y la configuración explícita.',
     de_DE:
-      'Vertraut keinen Zertifikate einer kompromittierten Zertifizierungsstelle mehr (eMudhra).',
+      'Optionale Bestätigungen geprüfter Kopien. Bestehende Leser bleiben bis zur separaten Freigabe des Ausstellers und ausdrücklichen Konfiguration schreibgeschützt.',
     pl_PL:
-      'Przestaje ufać certyfikatom ze skompromitowanego urzędu certyfikacji (eMudhra).',
+      'Dodaje opcjonalne potwierdzenia zweryfikowanych kopii. Istniejące połączenia zachowują dostęp tylko do odczytu do osobnej zgody wystawcy i jawnej konfiguracji.',
     fr_FR:
-      'Ne fait plus confiance aux certificats d’une autorité de certification compromise (eMudhra).',
+      'Ajoute des reçus facultatifs de copies vérifiées. Les lecteurs existants restent en lecture seule sans autorisation distincte de l’émetteur et configuration explicite.',
   },
   migrations: {
     up: async ({ effects }) => {},
