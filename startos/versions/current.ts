@@ -1,18 +1,18 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '0.1.0-beta.5:0',
+  version: '0.1.0-beta.5:1',
   releaseNotes: {
     en_US:
-      'Fix Cloudflare compatibility for paired export listing and downloads',
+      'Stops trusting certificates from a compromised certificate authority (eMudhra).',
     es_ES:
-      'Corrige la compatibilidad con Cloudflare al listar y descargar exportaciones vinculadas',
+      'Deja de confiar en los certificados de una autoridad de certificación comprometida (eMudhra).',
     de_DE:
-      'Behebt die Cloudflare-Kompatibilität beim Auflisten und Herunterladen verbundener Exporte',
+      'Vertraut keinen Zertifikate einer kompromittierten Zertifizierungsstelle mehr (eMudhra).',
     pl_PL:
-      'Poprawia zgodność z Cloudflare podczas wyświetlania i pobierania powiązanych eksportów',
+      'Przestaje ufać certyfikatom ze skompromitowanego urzędu certyfikacji (eMudhra).',
     fr_FR:
-      'Corrige la compatibilité Cloudflare pour la liste et le téléchargement des exports associés',
+      'Ne fait plus confiance aux certificats d’une autorité de certification compromise (eMudhra).',
   },
   migrations: {
     up: async ({ effects }) => {},

@@ -1,5 +1,14 @@
 FROM python:3.13.16-alpine3.24@sha256:2d9aefe2fef018a7eb2c13064c89c71929800fd2e5dccdbf52ea5da5bb8d929a
 ARG TARGETARCH
+# The base is digest-pinned, so its CA packages are frozen at 20260909-r0, which
+# still trusts the compromised eMudhra intermediates (emSign ECC Root CA - G3).
+# Upgrade BOTH ca-certificates packages: upgrading only -bundle regenerates the
+# store from the stale source dir and the emSign root comes back. Assert the
+# root is gone. Temporary: drop this layer once the pinned digest is bumped to
+# one built on Alpine >= 20261020-r0.
+RUN apk upgrade --no-cache ca-certificates ca-certificates-bundle \
+ && if [ -f /etc/ssl/certs/ca-certificates.crt.apk-new ]; then mv /etc/ssl/certs/ca-certificates.crt.apk-new /etc/ssl/certs/ca-certificates.crt; fi \
+ && ! grep -q MIICTjCCAdOgAwIBAgIKPPYHqWhwDtqLhDAKBggqhkjOPQQDAzBr /etc/ssl/certs/ca-certificates.crt
 RUN TARGETARCH="$TARGETARCH" python - <<'PY'
 import hashlib, io, os, urllib.request, zipfile
 arch = os.environ['TARGETARCH']
