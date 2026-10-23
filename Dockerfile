@@ -8,7 +8,9 @@ ARG TARGETARCH
 # one built on Alpine >= 20261020-r0.
 RUN apk upgrade --no-cache ca-certificates ca-certificates-bundle \
  && if [ -f /etc/ssl/certs/ca-certificates.crt.apk-new ]; then mv /etc/ssl/certs/ca-certificates.crt.apk-new /etc/ssl/certs/ca-certificates.crt; fi \
- && ! grep -q MIICTjCCAdOgAwIBAgIKPPYHqWhwDtqLhDAKBggqhkjOPQQDAzBr /etc/ssl/certs/ca-certificates.crt
+ && ! grep -q MIICTjCCAdOgAwIBAgIKPPYHqWhwDtqLhDAKBggqhkjOPQQDAzBr /etc/ssl/certs/ca-certificates.crt \
+ && pip install --no-cache-dir --upgrade "pip>=26.2.2" \
+ && echo "export PIP_CERT=/etc/ssl/certs/ca-certificates.crt" > /etc/profile.d/pip-cert.sh
 RUN TARGETARCH="$TARGETARCH" python - <<'PY'
 import hashlib, io, os, urllib.request, zipfile
 arch = os.environ['TARGETARCH']
