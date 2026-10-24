@@ -2,8 +2,8 @@
 
 ## Documentation
 
-- [Cashu backup copy runner](https://github.com/lnflash/cashu-card/blob/main/tools/backup-copy/README.md) — copy verification and recovery boundaries.
-- [Cashu recovery procedures](https://github.com/lnflash/cashu-card/blob/main/docs/OPS-RECOVERY-PLAN.md) — custody, restoration and reconciliation.
+- [Cashu backup copy runner](https://github.com/lnflash/cashu-card/blob/main/tools/backup-copy/README.md): copy verification and recovery boundaries.
+- [Cashu recovery procedures](https://github.com/lnflash/cashu-card/blob/main/docs/OPS-RECOVERY-PLAN.md): custody, restoration and reconciliation.
 
 ## What you get on StartOS
 
