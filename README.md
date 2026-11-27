@@ -79,7 +79,8 @@ auto-discovered from the server.
 retargeting the primary connection. Each gets a unique name, a separate directory
 in the existing dedicated Nextcloud account, and its own private reader secret,
 copy history, notification state, daemon and health checks. A lost claim response
-reuses the journaled device secret. Repeating the same name, origin and directory
+reuses the journaled device secret. A retry after a lost final success reply
+reuses the committed reader for that same pairing code. Repeating the same name, origin and directory
 can rotate that reader; changing its issuer identity or locations is rejected.
 Its receipt toggle still requires a separate issuer-side attestation grant.
 Notification routing is shared, with named alerts for additional issuers.
@@ -147,7 +148,7 @@ The operational boundaries below must remain explicit when assessing readiness.
 
 1. The installed release on Zion passed staging pairing,
    Nextcloud read-back and issuer-receipt checks. Additional issuer behavior in
-   the new candidate still needs actual StartOS upgrade and per-issuer runtime verification;
+   a new candidate requires actual StartOS upgrade and per-issuer runtime verification;
    compilation and container checks do not establish it. A StartOS volume
    backup/restore round trip also remains separate evidence.
 2. The package does not itself enforce issuance. A compatible issuer can require

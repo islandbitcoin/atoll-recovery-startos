@@ -152,10 +152,14 @@ jobs:
               await assert.rejects(connectAdditionalIssuer.run({effects: additionalEffects, input}))
               assert.equal((await additionalIssuers.read().once()).profiles.length, 0)
               const connected = await connectAdditionalIssuer.run({effects: additionalEffects, input})
-              assert.equal(claims[0], claims[1])
+              assert.equal(claims[0] === claims[1], true)
               assert.equal(JSON.stringify(connected).includes(claims[1]), false)
+              const connectedId = (await additionalIssuers.read().once()).profiles[0].id
+              await connectAdditionalIssuer.run({effects: additionalEffects, input})
+              assert.equal(claims[2] === claims[1], true)
+              assert.equal((await additionalIssuers.read().once()).profiles[0].id, connectedId)
               await assert.rejects(connectAdditionalIssuer.run({effects: additionalEffects, input: {...input, origin: 'https://other.invalid', directory: 'STAGING'}}))
-              assert.equal(claims.length, 2)
+              assert.equal(claims.length, 3)
               const profile = (await additionalIssuers.read().once()).profiles[0]
               assert.equal(profile.destination, 'nextcloud:production')
               assert.equal(profile.attest_copies, true)

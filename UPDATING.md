@@ -71,15 +71,16 @@ ineligible older archive is skipped for attestation; a newest ineligible export,
 authorization error or unsupported endpoint still fails health. State and immutable
 manifest formats are unchanged. Existing receipt settings are retained.
 
-## 0.1.0-beta.7:0
+## 0.1.0-beta.7:1
 
 Adds an initially empty private additional-issuer registry and runtime daemon
 composition. Existing primary configuration, credentials, notification routing,
 state paths and remote snapshots remain unchanged. Additional issuers share the
 dedicated Nextcloud account and alert route but have distinct reader credentials,
 destination directories, copy/delivery state and health checks. Lost claim replies
-reuse the pending secret; repeating the same coordinates rotates a reader without
-clearing history. Corrupt additional-issuer history fails closed. Existing verified
+reuse the pending secret; a retry after the final success reply is lost reuses
+the committed reader for that code. A fresh pairing code rotates the reader
+without clearing history. Corrupt additional-issuer history fails closed. Existing verified
 source/destination guards remain and also protect the shared Nextcloud account.
 
 Verify an upgrade with primary evidence already present, then add a separate

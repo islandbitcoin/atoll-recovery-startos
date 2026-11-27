@@ -100,13 +100,20 @@ export const connectAdditionalIssuer = sdk.Action.withInput(
     let secret = ''
     await additionalIssuers.update(effects, (current) => {
       const previous = current?.pending
+      const committed = current?.profiles.find(
+        (profile) =>
+          profile.issuer_origin === origin &&
+          profile.destination === destination &&
+          profile.label === name &&
+          profile.claim_code_hash === codeHash,
+      )
       secret =
         previous?.origin === origin &&
         previous.code_hash === codeHash &&
         previous.destination === destination &&
         previous.label === name
           ? previous.secret
-          : randomBytes(32).toString('base64url')
+          : (committed?.issuer_secret ?? randomBytes(32).toString('base64url'))
       return {
         ...current,
         profiles: current?.profiles ?? [],
@@ -171,6 +178,7 @@ export const connectAdditionalIssuer = sdk.Action.withInput(
         issuer_origin: origin,
         issuer_id: result.issuer_id,
         issuer_secret: secret,
+        claim_code_hash: codeHash,
         destination,
         attest_copies: input.receipts,
       }

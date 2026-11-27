@@ -20,6 +20,10 @@ export const issuerProfile = z.looseObject({
   issuer_origin: origin,
   issuer_id: z.uuid(),
   issuer_secret: z.string().regex(/^[A-Za-z0-9_-]{43}$/),
+  claim_code_hash: z
+    .string()
+    .regex(/^[a-f0-9]{64}$/)
+    .optional(),
   destination,
   attest_copies: z.boolean(),
 })
