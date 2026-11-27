@@ -1,10 +1,10 @@
 import { IMPOSSIBLE, VersionInfo } from '@start9labs/start-sdk'
 
 export const current = VersionInfo.of({
-  version: '0.1.0-beta.7:1',
+  version: '0.1.0-beta.7:2',
   releaseNotes: {
     en_US:
-      'Adds separate issuer connections, destinations, copy history, health checks and named notifications while preserving existing backups. Re-pair the same coordinates to rotate an additional reader without clearing evidence. Also upgrades pip to 26.2.2 and keeps distrusting the compromised eMudhra certificate authority.',
+      'Shows the issuer and verified snapshot time in health checks. Adds separate issuer connections, destinations, copy history, health checks and named notifications while preserving existing backups. Re-pair the same coordinates to rotate an additional reader without clearing evidence. Also upgrades pip to 26.2.2 and keeps distrusting the compromised eMudhra certificate authority.',
     es_ES:
       'Añade conexiones, destinos, historiales, controles de estado y avisos independientes por emisor, conservando las copias existentes. Vuelva a vincular las mismas ubicaciones para rotar un lector adicional sin borrar pruebas.',
     de_DE:

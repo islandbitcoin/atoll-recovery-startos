@@ -72,7 +72,7 @@ The copier checks on a 15-minute interval after each cycle. An export retains it
 
 **Advanced Transfer Setup** also replaces transfer credentials for the same locations. It never returns saved passwords. After a verified copy exists, keep the R2 account, bucket, Nextcloud URL, username and destination directory fixed; moving backups requires an operator-reviewed migration so old verification receipts cannot certify a new location.
 
-At 18 hours of source age the freshness display asks you to investigate. At 24 hours, on a failed copy, or when no check has completed for 30 minutes, health fails. Check transfer access, available storage and the export schedule. Do not delete evidence or overwrite conflicting copies to clear an error. A conflicting destination needs investigation.
+The dashboard identifies the primary issuer by hostname and additional issuers by their backup names. Each freshness check shows the source timestamp (UTC) of its latest verified snapshot. At 18 hours of source age the freshness display asks you to investigate. At 24 hours, on a failed copy, or when no check has completed for 30 minutes, health fails. Check transfer access, available storage and the export schedule. Do not delete evidence or overwrite conflicting copies to clear an error. A conflicting destination needs investigation.
 
 ## Recovery limits
 

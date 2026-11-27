@@ -89,3 +89,7 @@ without replacing either history. The focused SDK smoke checks lost-claim retry,
 primary retention and separate daemon paths; it does not substitute for StartOS
 runtime verification. Named alert text comes from the deliberately updated
 upstream pin, with the original unlabelled payload preserved.
+
+## 0.1.0-beta.7:2
+
+Freshness checks identify the primary issuer and show the source timestamp of the latest verified independent copy. Manual primary connections use a generic label. The existing state paths and freshness limits apply.

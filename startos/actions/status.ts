@@ -1,6 +1,7 @@
+import { freshnessCommand, primaryLabel, snapshotTime } from '../freshness'
 import { sdk } from '../sdk'
 import { i18n } from '../i18n'
-import { alertConfiguration } from '../fileModels/config'
+import { configuration, alertConfiguration } from '../fileModels/config'
 import { additionalIssuers } from '../fileModels/issuers'
 import { mounts, issuerPaths } from '../utils'
 
@@ -17,6 +18,7 @@ export const recoveryStatus = sdk.Action.withoutInput(
     visibility: 'enabled',
   },
   async ({ effects }) => {
+    const primary = await configuration.read().once()
     const alerts = await alertConfiguration.read().once()
     const additional = await additionalIssuers.read().once()
     return sdk.SubContainer.withTemp(
@@ -46,7 +48,7 @@ export const recoveryStatus = sdk.Action.withoutInput(
         const profiles = [
           {
             id: '',
-            label: '',
+            label: primaryLabel(primary?.issuer_origin),
             state: '/data/state/copy.json',
             alertState: '/data/state/alerts.json',
           },
@@ -60,17 +62,13 @@ export const recoveryStatus = sdk.Action.withoutInput(
         for (const profile of profiles) {
           const named = (value: string) =>
             value + (profile.label ? ': ' + profile.label : '')
-          const copy = await sub.exec([
-            'python',
-            '/opt/cashu-copy/copy.py',
-            '--health',
-            '--state',
-            profile.state,
-          ])
+          const copy = await sub.exec(freshnessCommand(profile.state))
+          let timestamp: string | null = null
           let copyStatus = 'failed'
           let age: number | null = null
           try {
             const report = JSON.parse(copy.stdout.toString())
+            timestamp = snapshotTime(report.source_time)
             if (['healthy', 'warning', 'failed'].includes(report.status))
               copyStatus = report.status
             if (
@@ -113,6 +111,10 @@ export const recoveryStatus = sdk.Action.withoutInput(
           }
           fields.push(
             field(named(i18n('Independent copy freshness')), label(copyStatus)),
+            field(
+              named(i18n('Last verified snapshot')),
+              timestamp ?? i18n('Unknown'),
+            ),
             field(
               named(i18n('Source snapshot age')),
               age === null

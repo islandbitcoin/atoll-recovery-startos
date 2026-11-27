@@ -1,3 +1,4 @@
+import { freshnessCommand, primaryLabel, snapshotTime } from './freshness'
 import { i18n } from './i18n'
 import { sdk } from './sdk'
 import { configuration, remotes, alertConfiguration } from './fileModels/config'
@@ -37,7 +38,7 @@ export const main = sdk.setupMain(async ({ effects }) => {
   const profiles = [
     {
       id: '',
-      label: '',
+      label: primaryLabel(config.issuer_origin),
       config: '/data/private/copy.json',
       state: '/data/state/copy.json',
       alerts: '/data/private/alerts.json',
@@ -115,37 +116,36 @@ export const main = sdk.setupMain(async ({ effects }) => {
             display: named(i18n('Independent copy freshness')),
             trigger: sdk.trigger.cooldownTrigger(60_000),
             fn: async () => {
-              const result = await sub.exec([
-                'python',
-                '/opt/cashu-copy/copy.py',
-                '--health',
-                '--state',
-                profile.state,
-              ])
+              const result = await sub.exec(freshnessCommand(profile.state))
+              const failed = i18n(
+                'No healthy independent copy. Check transfer access, the export schedule and retained evidence.',
+              )
               try {
-                const report: { status?: string } = JSON.parse(
-                  result.stdout.toString(),
-                )
-                if (result.exitCode === 0 && report.status === 'healthy')
-                  return {
-                    result: 'success',
-                    message: i18n('An independent copy is verified and fresh'),
-                  }
-                if (report.status === 'warning')
-                  return {
-                    result: 'failure',
-                    message: i18n(
-                      'The newest verified source is at least 18 hours old. Investigate before the 24-hour limit.',
-                    ),
-                  }
+                const report = JSON.parse(result.stdout.toString())
+                const timestamp = snapshotTime(report.source_time)
+                const healthy =
+                  result.exitCode === 0 &&
+                  report.status === 'healthy' &&
+                  timestamp !== null
+                const detail = healthy
+                  ? i18n('An independent copy is verified and fresh')
+                  : report.status === 'warning'
+                    ? i18n(
+                        'The newest verified source is at least 18 hours old. Investigate before the 24-hour limit.',
+                      )
+                    : failed
+                return {
+                  result: healthy ? 'success' : 'failure',
+                  message: timestamp
+                    ? detail +
+                      ' · ' +
+                      i18n('Last verified snapshot') +
+                      ': ' +
+                      timestamp
+                    : detail,
+                }
               } catch {
-                /* Never echo raw child output. */
-              }
-              return {
-                result: 'failure',
-                message: i18n(
-                  'No healthy independent copy. Check transfer access, the export schedule and retained evidence.',
-                ),
+                return { result: 'failure', message: failed }
               }
             },
           },

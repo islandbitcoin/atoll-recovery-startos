@@ -1,6 +1,8 @@
 import { LangDict } from './default'
 export default {
   es_ES: {
+    98: 'Conexión principal',
+    99: 'Última instantánea verificada',
     92: 'Conectar emisor adicional',
     93: 'Conserve el emisor existente y añada un directorio, historial de copias y controles de estado separados.',
     94: 'Nombre de la copia',
@@ -103,6 +105,8 @@ export default {
     80: 'Use una cuenta dedicada de Nextcloud sin privilegios administrativos. Vuelva a iniciar Conectar Nextcloud.',
   },
   de_DE: {
+    98: 'Primäre Verbindung',
+    99: 'Letzter verifizierter Snapshot',
     92: 'Weiteren Aussteller verbinden',
     93: 'Behalten Sie den vorhandenen Aussteller und ergänzen Sie ein separates Sicherungsverzeichnis mit eigenem Kopierverlauf und Zustandsprüfungen.',
     94: 'Name der Sicherung',
@@ -205,6 +209,8 @@ export default {
     80: 'Verwenden Sie ein eigenes Nextcloud-Konto ohne Administratorrechte. Starten Sie Nextcloud verbinden erneut.',
   },
   pl_PL: {
+    98: 'Połączenie główne',
+    99: 'Ostatnia zweryfikowana migawka',
     92: 'Połącz dodatkowego wystawcę',
     93: 'Zachowaj istniejącego wystawcę i dodaj osobny katalog kopii, historię kopiowania oraz kontrole stanu.',
     94: 'Nazwa kopii',
@@ -307,6 +313,8 @@ export default {
     80: 'Użyj osobnego konta Nextcloud bez praw administratora. Uruchom ponownie Połącz Nextcloud.',
   },
   fr_FR: {
+    98: 'Connexion principale',
+    99: 'Dernier instantané vérifié',
     92: 'Connecter un émetteur supplémentaire',
     93: 'Conservez l’émetteur existant et ajoutez un répertoire, un historique de copie et des contrôles distincts.',
     94: 'Nom de la sauvegarde',

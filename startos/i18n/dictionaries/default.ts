@@ -98,6 +98,8 @@ const dict = {
   'Connect the primary issuer and Nextcloud first.': 95,
   'Choose a distinct backup name, issuer and directory. Existing locations cannot be replaced.': 96,
   'At most eight additional issuers can be connected.': 97,
+  'Primary connection': 98,
+  'Last verified snapshot': 99,
 } as const
 export type I18nKey = keyof typeof dict
 export type LangDict = Record<(typeof dict)[I18nKey], string>
