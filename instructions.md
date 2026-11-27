@@ -44,13 +44,35 @@ entered. Complete a reviewed staging drill before enabling production enforcemen
 
 **Advanced Transfer Setup** retains the manual scoped R2-to-Nextcloud path. Use a bucket-scoped Object Read only credential and a dedicated Nextcloud app password; never use an account-administration token. The Nextcloud URL must end in `/dav/files/USER/` and pass normal TLS checks. Moving between source modes after verified evidence exists requires a reviewed migration.
 
+### Keep staging and production together
+
+After primary setup, stop Atoll and run **Connect Additional Issuer**. Enter a
+distinct backup name, the new issuer's HTTPS origin and private pairing code,
+and a new directory name in the existing dedicated Nextcloud account. The
+primary connection and previous backups stay intact. Each additional issuer
+has its own verification history, health checks and notification evidence;
+additional alerts include the backup name. Up to eight additional issuers are
+supported. Notification routing and the Nextcloud account are shared.
+
+If the new issuer needs copy receipts, enable its receipt toggle and separately
+ask its recovery administrator to authorize attestations for that new reader.
+Start Atoll and check both environments in **Recovery Status**. One environment's
+fresh backup never certifies another. The empty new issuer stays unhealthy until
+its own exported artifact and destination manifest are verified.
+
+To replace an additional reader's credential, use the same action with exactly
+the same name, origin and directory and a fresh pairing code. Evidence is
+preserved; separately authorize the new reader and revoke the old one through
+the issuer. Existing locations cannot be replaced through this action. Never
+delete receipts or alter the private issuer registry to make a health check pass.
+
 ## Using your backup copies
 
 The copier checks on a 15-minute interval after each cycle. An export retains its original source timestamp; copying an old export again does not make it fresh. No previous snapshot is automatically deleted.
 
 **Advanced Transfer Setup** also replaces transfer credentials for the same locations. It never returns saved passwords. After a verified copy exists, keep the R2 account, bucket, Nextcloud URL, username and destination directory fixed; moving backups requires an operator-reviewed migration so old verification receipts cannot certify a new location.
 
-At 18 hours of source age the freshness display asks you to investigate. At 24 hours, on a failed copy, or when no check has completed for 30 minutes, health fails. Check transfer access, available storage and the export schedule. Do not delete evidence or overwrite conflicting copies to clear an error. A conflicting destination needs investigation.
+The dashboard identifies the primary issuer by hostname and additional issuers by their backup names. Each freshness check shows the source timestamp (UTC) of its latest verified snapshot. At 18 hours of source age the freshness display asks you to investigate. At 24 hours, on a failed copy, or when no check has completed for 30 minutes, health fails. Check transfer access, available storage and the export schedule. Do not delete evidence or overwrite conflicting copies to clear an error. A conflicting destination needs investigation.
 
 ## Recovery limits
 

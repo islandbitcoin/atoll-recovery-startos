@@ -1,6 +1,58 @@
 import * as fs from 'node:fs/promises'
 import { sdk } from './sdk'
 import { i18n } from './i18n'
+import { randomUUID } from 'node:crypto'
+import { additionalIssuers, type AdditionalIssuer } from './fileModels/issuers'
+
+export function issuerPaths(id: string) {
+  return {
+    config: `/data/private/issuers/${id}/copy.json`,
+    state: `/data/state/issuers/${id}/copy.json`,
+    alerts: `/data/private/issuers/${id}/alerts.json`,
+    alertState: `/data/state/issuers/${id}/alerts.json`,
+  }
+}
+
+// Materialize only runtime configuration. Never initialize, replace or delete
+// any profile's copy/notification evidence when its credentials are refreshed.
+export async function prepareIssuerFiles(
+  profile: AdditionalIssuer,
+  alerts: Record<string, unknown>,
+) {
+  for (const prefix of ['private', 'state']) {
+    const directory = sdk.volumes.main.subpath(
+      `${prefix}/issuers/${profile.id}`,
+    )
+    await fs.mkdir(directory, { recursive: true, mode: 0o700 })
+    await fs.chmod(directory, 0o700)
+  }
+  const write = async (name: string, value: unknown) => {
+    const target = sdk.volumes.main.subpath(
+      `private/issuers/${profile.id}/${name}`,
+    )
+    const temporary = target + '.' + randomUUID()
+    await fs.writeFile(temporary, JSON.stringify(value) + '\n', {
+      mode: 0o600,
+      flag: 'wx',
+    })
+    await fs.rename(temporary, target)
+  }
+  await write('copy.json', {
+    rclone_config: '/data/private/rclone.conf',
+    source_kind: 'issuer',
+    source: 'issuer:' + profile.issuer_id,
+    issuer_origin: profile.issuer_origin,
+    issuer_id: profile.issuer_id,
+    issuer_secret: profile.issuer_secret,
+    attest_copies: profile.attest_copies,
+    destination: profile.destination,
+  })
+  await write('alerts.json', {
+    ...alerts,
+    label: profile.label,
+    generation: String(alerts.generation ?? '') + ':' + profile.id,
+  })
+}
 
 export const mounts = (readonly = false) =>
   sdk.Mounts.of().mountVolume({
@@ -22,14 +74,31 @@ export async function preparePrivateFiles() {
     'private/copy.json',
     'private/alerts.json',
     'private/setup.json',
+    'private/additional-issuers.json',
   ]) {
     const file = sdk.volumes.main.subpath(name)
+    let existing = true
+    try {
+      await fs.stat(file)
+    } catch (error) {
+      if (error instanceof Error && 'code' in error && error.code === 'ENOENT')
+        existing = false
+      else throw error
+    }
     // An existing empty JSON file from the first prerelease also needs a
     // document before FileHelper parses it. Never rewrite nonempty config.
     const handle = await fs.open(file, 'a+', 0o600)
     try {
       await handle.chmod(0o600)
       if (name.endsWith('.json') && (await handle.stat()).size === 0) {
+        // This registry never existed in the empty-file prerelease. Repairing
+        // a truncated registry would silently forget enrolled backup sources.
+        if (existing && name === 'private/additional-issuers.json')
+          throw new Error(
+            i18n(
+              'Connection failed. Check approval, origin and network access.',
+            ),
+          )
         await handle.writeFile('{}\n')
       }
     } finally {
@@ -41,6 +110,13 @@ export async function preparePrivateFiles() {
 // Missing state permits setup corrections. Corrupt/unreadable evidence locks
 // retargeting conservatively; it must never be treated as an empty history.
 export async function hasVerifiedEvidence() {
+  // Additional issuers share the primary Nextcloud account. Once enrolled,
+  // those remote coordinates must not change through primary setup actions.
+  try {
+    if ((await additionalIssuers.read().once())?.profiles.length) return true
+  } catch {
+    return true
+  }
   try {
     const state = JSON.parse(
       await fs.readFile(sdk.volumes.main.subpath('state/copy.json'), 'utf8'),
